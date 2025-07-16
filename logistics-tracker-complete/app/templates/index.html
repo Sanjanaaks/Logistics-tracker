@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Logistics Tracker</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🚚 Logistics Tracker</h1>
+    <p>Test your API below</p>
+
+    <h2>Register</h2>
+    <form id="registerForm">
+      <input type="email" placeholder="Email" name="email" required>
+      <input type="password" placeholder="Password" name="password" required>
+      <button type="submit">Register</button>
+    </form>
+
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="email" placeholder="Email" name="email" required>
+      <input type="password" placeholder="Password" name="password" required>
+      <button type="submit">Login</button>
+    </form>
+
+    <h2>Create Shipment</h2>
+    <form id="shipmentForm">
+      <input type="text" placeholder="Customer Name" name="customer_name" required>
+      <input type="text" placeholder="Origin" name="origin" required>
+      <input type="text" placeholder="Destination" name="destination" required>
+      <button type="submit">Create</button>
+    </form>
+
+    <pre id="output"></pre>
+  </div>
+
+  <script>
+    const apiBase = '/api';
+
+    const registerForm = document.getElementById('registerForm');
+    const loginForm = document.getElementById('loginForm');
+    const shipmentForm = document.getElementById('shipmentForm');
+    const output = document.getElementById('output');
+
+    let token = '';
+
+    registerForm.onsubmit = async (e) => {
+      e.preventDefault();
+      const res = await fetch(`${apiBase}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(new FormData(registerForm)))
+      });
+      output.textContent = await res.text();
+    };
+
+    loginForm.onsubmit = async (e) => {
+      e.preventDefault();
+      const res = await fetch(`${apiBase}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(new FormData(loginForm)))
+      });
+      const data = await res.json();
+      token = data.token;
+      output.textContent = JSON.stringify(data, null, 2);
+    };
+
+    shipmentForm.onsubmit = async (e) => {
+      e.preventDefault();
+      const res = await fetch(`${apiBase}/shipments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(Object.fromEntries(new FormData(shipmentForm)))
+      });
+      output.textContent = await res.text();
+    };
+  </script>
+</body>
+</html>
